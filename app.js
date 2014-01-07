@@ -13,6 +13,7 @@ nconf.argv().env().file({ file: './local.json'}).defaults({
 });
 
 var config = nconf.get();
+config.DEV = (typeof(config.DEV) === 'string' && config.DEV.toLowerCase() === 'true') || config.DEV === true
 
 if ((config.BUGZILLA_USERNAME === undefined || config.BUGZILLA_PASSWORD === undefined) && (!config.DEV)) {
     console.error('Set bugzilla username and password first.');
