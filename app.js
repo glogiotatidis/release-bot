@@ -6,11 +6,11 @@ var express = require('express');
 var app = express();
 var nconf = require('nconf');
 
-nconf.file({ file: './local.json'}).defaults({
+nconf.argv().env().file({ file: './local.json'}).defaults({
     PORT: 3000,
     nick: 'release-bot',
     DEV: false
-}).argv().env();
+});
 
 var config = nconf.get();
 
