@@ -1,4 +1,4 @@
-name: irc-release-helper
+name: release-bot
 framework:
   type: node
 mem: 36M
@@ -10,3 +10,4 @@ ignores:
   - .git
   - local.json*
   - venv
+  - node_modules
