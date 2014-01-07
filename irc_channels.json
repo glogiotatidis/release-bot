@@ -1,1 +1,6 @@
-{}
+{
+  "#remo-dev": {
+      "repo": "https://github.com/mozilla/remo"
+  }    
+}
+
