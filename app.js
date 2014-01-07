@@ -44,10 +44,6 @@ irc.on('registered', function(message) {
     console.info('Using nickname: ' + config.realNick);
 });
 
-irc.on('message', function(user, channel, message) {
-
-});
-
 /// Express
 app.use(express.bodyParser());
 var data = 'Not much here.';
