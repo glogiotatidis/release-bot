@@ -66,7 +66,7 @@ function tag_bug(bugNumber) {
         if (!error) {
             bugzilla.updateBug(
                 bugNumber,
-                {'target_milestone': 'next',
+                {'version': 'next',
                  'token': bug.update_token},
                 function(error, bug) {
                     if (error) {
