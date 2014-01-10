@@ -70,10 +70,10 @@ function tag_bug(bugNumber) {
                  'token': bug.update_token},
                 function(error, bug) {
                     if (error) {
-                        message = 'Error tagging bug ' + bugNumber;
+                        var message = 'Error tagging bug ' + bugNumber;
                     }
                     else {
-                        message = 'Tagging bug ' + bugNumber;
+                        var message = 'Tagging bug ' + bugNumber;
                     }
                     for (var channel in ircChannels) {
                         if (ircChannels[channel].repo === data.repository.url) {
