@@ -70,12 +70,16 @@ function tag_bug(bugNumber) {
                  'token': bug.update_token},
                 function(error, bug) {
                     if (error) {
-                        console.log('Error updating');
-                        console.log(error);
+                        message = 'Error tagging bug ' + bugNumber;
                     }
                     else {
-                        console.log('all ok!');
-                        console.log(bug);
+                        message = 'Tagging bug ' + bugNumber;
+                    }
+                    for (var channel in ircChannels) {
+                        if (ircChannels[channel].repo === data.repository.url) {
+                            irc.say(channel, message);
+                            break;
+                        }
                     }
                 }
             );
@@ -103,15 +107,17 @@ app.post('/', function(request, response) {
                 var matches = message.match(bug_re);
                 for (var index in matches) {
                     var bug = matches[index].match(/\d+/)[0];
-                    for (var channel in ircChannels) {
-                        if (ircChannels[channel].repo === data.repository.url) {
-                            message = 'Tagging bug ' + bug;
-                            irc.say(channel, message);
-                            break;
-                        }
-                    }
                     if (!config.DEV) {
                         tag_bug(bug);
+                    }
+                    else {
+                        var message = 'Tagging bug ' + bug;
+                        for (var channel in ircChannels) {
+                            if (ircChannels[channel].repo === data.repository.url) {
+                                irc.say(channel, message);
+                                break;
+                            }
+                        }
                     }
                 }
             }
