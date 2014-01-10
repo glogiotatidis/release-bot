@@ -97,6 +97,9 @@ app.post('/', function(request, response) {
         for (var commit in data.commits) {
             var message = data.commits[commit].message.toLowerCase();
             if (bug_re.test(message)) {
+                // We must explicitly reset lastIndex for the next
+                // match to happen. This is a known ES3 bug.
+                bug_re.lastIndex = 0;
                 var matches = message.match(bug_re);
                 for (var index in matches) {
                     var bug = matches[index].match(/\d+/)[0];
