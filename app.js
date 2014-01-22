@@ -27,7 +27,7 @@ if (config.DEV) {
 }
 
 console.log(Object.keys(ircChannels));
-    
+
 var irc = new IRC.Client('irc.mozilla.org', config.nick, {
     secure: true,
     port: 6697,
@@ -92,7 +92,8 @@ function tag_bug(bugNumber) {
 
 
 app.post('/', function(request, response) {
-    data = JSON.parse(request.body.payload);
+    var bug_list = [];
+    var data = JSON.parse(request.body.payload);
     if (data.ref !== 'refs/heads/master') {
         console.log('Not tagging because commit not in master.');
     }
@@ -102,19 +103,25 @@ app.post('/', function(request, response) {
             var message = data.commits[commit].message.toLowerCase();
             if (bug_re.test(message)) {
                 // We must explicitly reset lastIndex for the next
-                // match to happen. This is a known ES3 bug.
+                // match to happen. This is a known ES bug.
                 bug_re.lastIndex = 0;
                 var matches = message.match(bug_re);
                 for (var index in matches) {
                     var bug = matches[index].match(/\d+/)[0];
+                    // Check if bug has been tagged already during
+                    // this request.
+                    if (bug_list.indexOf(bug) > -1) {
+                        continue;
+                    }
+                    bug_list.push(bug);
                     if (!config.DEV) {
                         tag_bug(bug);
                     }
                     else {
-                        var message = 'Tagging bug ' + bug;
+                        var irc_message = 'Tagging bug ' + bug;
                         for (var channel in ircChannels) {
                             if (ircChannels[channel].repo === data.repository.url) {
-                                irc.say(channel, message);
+                                irc.say(channel, irc_message);
                                 break;
                             }
                         }
