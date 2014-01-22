@@ -1,6 +1,8 @@
 {
   "#remo-dev": {
-      "repo": "https://github.com/mozilla/remo"
+      "repo": "https://github.com/mozilla/remo",
+      "product": "Mozilla Reps",
+      "component": "reps.mozilla.org"
   }    
 }
 

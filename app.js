@@ -61,6 +61,69 @@ var bugzilla = bz.createClient({
     timeout: 30000
 });
 
+
+irc.on('message', function(user, channel, message) {
+    var regex = new RegExp('^' + config.realNick + '[:,]?');
+    var command = message.split(regex)[1];
+
+    if (command) {
+        command = command.trim();
+        if (command === 'can we release?') {
+            query_bug_status(channel);
+        }
+        else if (command === 'will it blend?') {
+            var blend_list = ['http://www.willitblend.com/videos/avocados',
+                              'http://www.willitblend.com/videos/healthy-green-drink',
+                              'http://www.willitblend.com/videos/ice-into-snow',
+                              'http://www.willitblend.com/videos/coffee',
+                              'http://www.willitblend.com/videos/paintballs',
+                              'http://www.willitblend.com/videos/credit-cards'];
+            var link = blend_list[Math.floor(Math.random() * blend_list.length)];
+            irc.say(channel, 'Of course it will ' + user + '! ' + link);
+        }
+    }
+});
+
+
+function query_bug_status(channel) {
+    bugzilla.searchBugs({version: 'next',
+                         component: ircChannels[channel].component,
+                         product: ircChannels[channel].product},
+                         function(error, bug_list) {
+                             if (bug_list && bug_list.length === 0) {
+                                 irc.say(channel, 'No bugs waiting for release.');
+                                 return;
+                             }
+                             var open_bugs = [];
+                             var unverified_bugs = [];
+                             var verified_bugs = [];
+
+                             for (var index in bug_list) {
+                                 var bug = bug_list[index];
+                                 if (bug.resolution !== 'FIXED') {
+                                     // irc.say(channel, 'Bug' + bug.id + ' is not FIXED');
+                                     open_bugs.push(bug);
+                                 }
+                                 else if (bug.status !== 'VERIFIED' && bug.whiteboard.indexOf('qa-') === -1) {
+                                     // irc.say(channel, 'Bug ' + bug.id + ' needs verification');
+                                     unverified_bugs.push(bug);
+                                 }
+                                 else {
+                                     verified_bugs.push(bug);
+                                 }
+                             }
+                             irc.say(channel, ('There are ' + verified_bugs.length + ' verified bugs, ' +
+                                               unverified_bugs.length + ' unverified bugs and ' +
+                                               open_bugs.length + ' open bugs on version "next".'));
+                             if (verified_bugs.length == bug_list.length) {
+                                 irc.say(channel, 'Yes we can!');
+                             }
+                             else {
+                                 irc.say(channel, 'Not yet!');
+                             }
+                        });
+}
+
 function tag_bug(bugNumber) {
     bugzilla.getBug(bugNumber, function(error, bug) {
         if (!error) {
