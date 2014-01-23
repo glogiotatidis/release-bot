@@ -124,7 +124,7 @@ function query_bug_status(channel) {
                         });
 }
 
-function tag_bug(bugNumber) {
+function tag_bug(bugNumber, repository_url) {
     bugzilla.getBug(bugNumber, function(error, bug) {
         if (!error) {
             bugzilla.updateBug(
@@ -139,7 +139,7 @@ function tag_bug(bugNumber) {
                         var message = 'Tagging bug ' + bugNumber;
                     }
                     for (var channel in ircChannels) {
-                        if (ircChannels[channel].repo === data.repository.url) {
+                        if (ircChannels[channel].repo === repository_url) {
                             irc.say(channel, message);
                             break;
                         }
@@ -178,7 +178,7 @@ app.post('/', function(request, response) {
                     }
                     bug_list.push(bug);
                     if (!config.DEV) {
-                        tag_bug(bug);
+                        tag_bug(bug, data.repository.url);
                     }
                     else {
                         var irc_message = 'Tagging bug ' + bug;
