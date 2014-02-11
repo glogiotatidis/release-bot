@@ -134,6 +134,7 @@ function tag_bug(bugNumber, repository_url) {
                 function(error, bug) {
                     if (error) {
                         var message = 'Error tagging bug ' + bugNumber;
+                        console.log(error);
                     }
                     else {
                         var message = 'Tagging bug ' + bugNumber;
@@ -178,7 +179,7 @@ app.post('/', function(request, response) {
                     }
                     bug_list.push(bug);
                     if (!config.DEV) {
-                        tag_bug(bug, data.repository.url);
+                        setTimeout(tag_bug, 1000, bug, data.repository.url);
                     }
                     else {
                         var irc_message = 'Tagging bug ' + bug;
