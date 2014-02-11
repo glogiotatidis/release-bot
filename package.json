@@ -14,11 +14,5 @@
             "type": "apache2",
             "url": "http://www.apache.org/licenses/LICENSE-2.0"
         }
-    ],
-    "dependencies": {
-        "express": "3.1.1",
-        "irc": "~0.3.6",
-        "nconf": "~0.6.7",
-        "bz": "0.2.5"
-    }
+    ]
 }
