@@ -134,10 +134,12 @@ function tag_bug(bugNumber, repository_url) {
                 function(error, bug) {
                     if (error) {
                         var message = 'Error tagging bug ' + bugNumber;
+                        console.log(message);
                         console.log(error);
                     }
                     else {
                         var message = 'Tagging bug ' + bugNumber;
+                        console.log(message);
                     }
                     for (var channel in ircChannels) {
                         if (ircChannels[channel].repo === repository_url) {
@@ -179,7 +181,7 @@ app.post('/', function(request, response) {
                     }
                     bug_list.push(bug);
                     if (!config.DEV) {
-                        setTimeout(tag_bug, 1000, bug, data.repository.url);
+                        setTimeout(tag_bug, 20000, bug, data.repository.url);
                     }
                     else {
                         var irc_message = 'Tagging bug ' + bug;
